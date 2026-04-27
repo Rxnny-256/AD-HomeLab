@@ -1,0 +1,22 @@
+# bulk_users.ps1 — Bulk create 100+ AD users
+Import-Module ActiveDirectory
+
+$password = ConvertTo-SecureString "P@ssword123" -AsPlainText -Force
+$ou = "OU=Employees,DC=Lab,DC=local"
+
+New-ADOrganizationalUnit -Name "Employees" -Path "DC=Lab,DC=local"
+
+1..100 | ForEach-Object {
+    $name = "User$_"
+    New-ADUser `
+        -Name $name `
+        -GivenName "User" `
+        -Surname "$_" `
+        -SamAccountName $name `
+        -UserPrincipalName "$name@Lab.local" `
+        -Path $ou `
+        -AccountPassword $password `
+        -Enabled $true
+}
+
+Write-Host "100 users created successfully!"
